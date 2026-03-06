@@ -1,0 +1,134 @@
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    Echarts 地图参数修改与下载 - 自定义地图URL, Coloris RGBA, 标签控制,
+    透明背景选项
+  </title>
+</head>
+
+<body>
+  <!-- 顶部导航栏 -->
+  <header class="header">
+    <div class="header-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21 3 6"></polygon>
+        <line x1="9" y1="3" x2="9" y2="18"></line>
+        <line x1="15" y1="6" x2="15" y2="21"></line>
+      </svg>
+      <h1>MapSaver</h1>
+    </div>
+    <div class="header-links">
+      <a rel="noopener" href="https://datav.aliyun.com/portal/school/atlas/area_selector" target="_blank"
+        class="btn btn-outline" title="前往 DataV 获取更多 JSON">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+        获取地图 JSON
+      </a>
+    </div>
+  </header>
+
+  <div id="chart-container">
+    <!-- 控制面板 (左侧) -->
+    <aside class="controls">
+
+      <div class="control-section">
+        <h2 class="section-title">数据源</h2>
+
+        <div class="control-group">
+          <label for="presetMap">内置地图:</label>
+          <select id="presetMap" class="select-input">
+            <option value="https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json">中国 (China)</option>
+            <option value="https://geo.datav.aliyun.com/areas_v3/bound/430000_full.json" selected>湖南省 (Hunan)</option>
+            <option value="https://geo.datav.aliyun.com/areas_v3/bound/330000_full.json">浙江省 (Zhejiang)</option>
+            <option value="https://geo.datav.aliyun.com/areas_v3/bound/440000_full.json">广东省 (Guangdong)</option>
+            <option value="custom">-- 自定义 JSON 链接 --</option>
+          </select>
+        </div>
+
+        <div class="control-group" id="customUrlGroup" style="display: none;">
+          <label for="geoJsonUrl">自定义 JSON 链接:</label>
+          <div class="input-with-button">
+            <input type="text" id="geoJsonUrl" placeholder="https://"
+              value="https://geo.datav.aliyun.com/areas_v3/bound/430000_full.json" />
+            <button id="loadMapBtn" class="btn btn-primary">加载</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-section">
+        <h2 class="section-title">地图样式</h2>
+
+        <div class="control-group checkbox-group">
+          <label class="toggle-switch">
+            <input type="checkbox" id="transparentBackground" />
+            <span class="slider"></span>
+          </label>
+          <label for="transparentBackground">透明背景</label>
+        </div>
+
+        <div class="control-group" id="backgroundColorGroup">
+          <label for="backgroundColor">背景颜色:</label>
+          <input type="text" data-coloris id="backgroundColor" value="rgba(255, 255, 255, 1)" />
+        </div>
+
+        <div class="control-group">
+          <label for="areaColor">区域颜色:</label>
+          <input type="text" data-coloris id="areaColor" value="rgba(9, 87, 208, 1)" />
+        </div>
+
+        <div class="control-group">
+          <label for="borderColor">边框颜色:</label>
+          <input type="text" data-coloris id="borderColor" value="rgba(238, 238, 238, 1)" />
+        </div>
+
+        <div class="control-group">
+          <label for="borderWidth">边框宽度: <span class="val-display" id="borderWidthVal">1px</span></label>
+          <input type="range" id="borderWidth" value="1" min="0" max="5" step="0.5" class="range-input" />
+        </div>
+      </div>
+
+      <div class="control-section">
+        <h2 class="section-title">文本标签</h2>
+
+        <div class="control-group checkbox-group">
+          <label class="toggle-switch">
+            <input type="checkbox" id="showLabel" checked />
+            <span class="slider"></span>
+          </label>
+          <label for="showLabel">显示标签</label>
+        </div>
+
+        <div class="control-group">
+          <label for="labelColor">标签颜色:</label>
+          <input type="text" data-coloris id="labelColor" value="rgba(255, 255, 255, 1)" />
+        </div>
+
+        <div class="control-group">
+          <label for="labelFontSize">字体大小: <span class="val-display" id="labelFontSizeVal">12px</span></label>
+          <input type="range" id="labelFontSize" value="12" min="8" max="24" step="1" class="range-input" />
+        </div>
+      </div>
+    </aside>
+
+    <!-- 地图区域 (右侧) -->
+    <main class="chart-main">
+      <div id="mapChart"></div>
+      <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <span>加载地图数据中...</span>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>
