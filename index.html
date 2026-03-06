@@ -39,83 +39,122 @@
     <!-- 控制面板 (左侧) -->
     <aside class="controls">
 
-      <div class="control-section">
-        <h2 class="section-title">数据源</h2>
+      <!-- 数据源 (Data Source) Accordion -->
+      <details class="control-section" open>
+        <summary class="section-title">数据源</summary>
+        <div class="section-content">
 
-        <div class="control-group">
-          <label for="presetMap">内置地图:</label>
-          <select id="presetMap" class="select-input">
-            <option value="https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json">中国 (China)</option>
-            <option value="https://geo.datav.aliyun.com/areas_v3/bound/430000_full.json" selected>湖南省 (Hunan)</option>
-            <option value="https://geo.datav.aliyun.com/areas_v3/bound/330000_full.json">浙江省 (Zhejiang)</option>
-            <option value="https://geo.datav.aliyun.com/areas_v3/bound/440000_full.json">广东省 (Guangdong)</option>
-            <option value="custom">-- 自定义 JSON 链接 --</option>
-          </select>
-        </div>
-
-        <div class="control-group" id="customUrlGroup" style="display: none;">
-          <label for="geoJsonUrl">自定义 JSON 链接:</label>
-          <div class="input-with-button">
-            <input type="text" id="geoJsonUrl" placeholder="https://"
-              value="https://geo.datav.aliyun.com/areas_v3/bound/430000_full.json" />
-            <button id="loadMapBtn" class="btn btn-primary">加载</button>
+          <div class="tabs">
+            <button class="tab-btn active" data-target="tab-builtin">内置地图</button>
+            <button class="tab-btn" data-target="tab-url">自定义链接</button>
+            <button class="tab-btn" data-target="tab-json">JSON 文本</button>
           </div>
+
+          <div id="tab-builtin" class="tab-content active">
+            <div class="control-group">
+              <label for="provinceSelect">省份/直辖市:</label>
+              <select id="provinceSelect" class="select-input">
+                <option value="100000">全国 (China)</option>
+                <!-- JS will populate options -->
+              </select>
+            </div>
+            <div class="control-group" id="cityGroup" style="display: none;">
+              <label for="citySelect">地级市:</label>
+              <select id="citySelect" class="select-input">
+                <option value="all">-- 全省 --</option>
+                <!-- JS will populate options -->
+              </select>
+            </div>
+            <button id="loadBuiltinBtn" class="btn btn-primary w-full mt-2">加载内置地图</button>
+          </div>
+
+          <div id="tab-url" class="tab-content">
+            <div class="control-group">
+              <label for="geoJsonUrl">GeoJSON 链接:</label>
+              <div class="input-with-button">
+                <input type="text" id="geoJsonUrl" placeholder="https://"
+                  value="https://geo.datav.aliyun.com/areas_v3/bound/430000_full.json" />
+                <button id="loadMapUrlBtn" class="btn btn-primary">加载</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-json" class="tab-content">
+            <div class="control-group">
+              <label for="geoJsonText">粘贴 GeoJSON 文本:</label>
+              <textarea id="geoJsonText" rows="5" class="textarea-input"
+                placeholder='{"type":"FeatureCollection","features":[]}'></textarea>
+              <button id="loadMapJsonBtn" class="btn btn-primary mt-2">渲染地图</button>
+            </div>
+          </div>
+
         </div>
-      </div>
+      </details>
 
-      <div class="control-section">
-        <h2 class="section-title">地图样式</h2>
+      <!-- 地图样式 (Map Style) Accordion -->
+      <details class="control-section" open>
+        <summary class="section-title">地图样式</summary>
+        <div class="section-content">
 
-        <div class="control-group checkbox-group">
-          <label class="toggle-switch">
-            <input type="checkbox" id="transparentBackground" />
-            <span class="slider"></span>
-          </label>
-          <label for="transparentBackground">透明背景</label>
+          <div class="control-group checkbox-group">
+            <label class="toggle-switch">
+              <input type="checkbox" id="transparentBackground" />
+              <span class="slider"></span>
+            </label>
+            <label for="transparentBackground">透明背景</label>
+          </div>
+
+          <div class="settings-grid">
+            <div class="control-group" id="backgroundColorGroup">
+              <label for="backgroundColor">背景颜色:</label>
+              <input type="text" data-coloris id="backgroundColor" value="rgba(255, 255, 255, 1)" />
+            </div>
+
+            <div class="control-group">
+              <label for="areaColor">区域颜色:</label>
+              <input type="text" data-coloris id="areaColor" value="rgba(9, 87, 208, 1)" />
+            </div>
+
+            <div class="control-group" style="grid-column: span 2;">
+              <label for="borderColor">边框颜色:</label>
+              <input type="text" data-coloris id="borderColor" value="rgba(238, 238, 238, 1)" />
+            </div>
+          </div>
+
+          <div class="control-group mt-2">
+            <label for="borderWidth">边框宽度: <span class="val-display" id="borderWidthVal">1px</span></label>
+            <input type="range" id="borderWidth" value="1" min="0" max="5" step="0.5" class="range-input" />
+          </div>
+
         </div>
+      </details>
 
-        <div class="control-group" id="backgroundColorGroup">
-          <label for="backgroundColor">背景颜色:</label>
-          <input type="text" data-coloris id="backgroundColor" value="rgba(255, 255, 255, 1)" />
+      <!-- 文本标签 (Labels) Accordion -->
+      <details class="control-section" open>
+        <summary class="section-title">文本标签</summary>
+        <div class="section-content">
+
+          <div class="control-group checkbox-group">
+            <label class="toggle-switch">
+              <input type="checkbox" id="showLabel" checked />
+              <span class="slider"></span>
+            </label>
+            <label for="showLabel">显示标签</label>
+          </div>
+
+          <div class="control-group mt-2">
+            <label for="labelColor">标签颜色:</label>
+            <input type="text" data-coloris id="labelColor" value="rgba(255, 255, 255, 1)" />
+          </div>
+
+          <div class="control-group mt-2">
+            <label for="labelFontSize">字体大小: <span class="val-display" id="labelFontSizeVal">12px</span></label>
+            <input type="range" id="labelFontSize" value="12" min="8" max="24" step="1" class="range-input" />
+          </div>
+
         </div>
+      </details>
 
-        <div class="control-group">
-          <label for="areaColor">区域颜色:</label>
-          <input type="text" data-coloris id="areaColor" value="rgba(9, 87, 208, 1)" />
-        </div>
-
-        <div class="control-group">
-          <label for="borderColor">边框颜色:</label>
-          <input type="text" data-coloris id="borderColor" value="rgba(238, 238, 238, 1)" />
-        </div>
-
-        <div class="control-group">
-          <label for="borderWidth">边框宽度: <span class="val-display" id="borderWidthVal">1px</span></label>
-          <input type="range" id="borderWidth" value="1" min="0" max="5" step="0.5" class="range-input" />
-        </div>
-      </div>
-
-      <div class="control-section">
-        <h2 class="section-title">文本标签</h2>
-
-        <div class="control-group checkbox-group">
-          <label class="toggle-switch">
-            <input type="checkbox" id="showLabel" checked />
-            <span class="slider"></span>
-          </label>
-          <label for="showLabel">显示标签</label>
-        </div>
-
-        <div class="control-group">
-          <label for="labelColor">标签颜色:</label>
-          <input type="text" data-coloris id="labelColor" value="rgba(255, 255, 255, 1)" />
-        </div>
-
-        <div class="control-group">
-          <label for="labelFontSize">字体大小: <span class="val-display" id="labelFontSizeVal">12px</span></label>
-          <input type="range" id="labelFontSize" value="12" min="8" max="24" step="1" class="range-input" />
-        </div>
-      </div>
     </aside>
 
     <!-- 地图区域 (右侧) -->
