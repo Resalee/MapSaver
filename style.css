@@ -134,7 +134,7 @@ body {
 
 /* Controls Panel */
 .controls {
-  width: 320px;
+  width: 360px;
   background-color: var(--panel-bg);
   border-right: 1px solid var(--border-color);
   display: flex;
@@ -157,6 +157,55 @@ body {
 /* Accordion Styling */
 .control-section {
   border-bottom: 1px solid var(--border-color);
+}
+
+/* 2-Column Style & Label Grid */
+.style-label-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  align-items: start;
+  padding: 14px 16px !important;
+}
+
+.style-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.style-col-header {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.style-divider {
+  width: 1px;
+  background-color: var(--border-color);
+  margin: 0 12px;
+  align-self: stretch;
+}
+
+/* Vertical swatch layout (for inner column) */
+.color-swatches-col {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Export options side by side */
+.export-options-row {
+  display: flex;
+  gap: 8px;
+}
+
+.export-option {
+  flex: 1;
 }
 
 .section-title {

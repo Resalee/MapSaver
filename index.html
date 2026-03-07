@@ -95,81 +95,85 @@
         </div>
       </details>
 
-      <!-- 地图样式 -->
+      <!-- 地图样式 & 文本标签 (2列布局) -->
       <details class="control-section" open>
-        <summary class="section-title">地图样式</summary>
-        <div class="section-content">
+        <summary class="section-title">样式 & 标签</summary>
+        <div class="section-content style-label-grid">
 
-          <div class="control-group checkbox-group">
-            <label class="toggle-switch">
-              <input type="checkbox" id="transparentBackground" />
-              <span class="slider"></span>
-            </label>
-            <span>透明背景</span>
-          </div>
+          <!-- 左列：地图样式 -->
+          <div class="style-col">
+            <div class="style-col-header">地图样式</div>
 
-          <!-- 颜色色块 (3列) -->
-          <div class="color-swatches-row">
-            <div class="color-swatch-item" id="backgroundColorGroup">
-              <button class="color-swatch-btn" id="backgroundColor-swatch" title="背景颜色">
-                <span class="swatch-preview" id="backgroundColor-preview"
-                  style="background: rgba(244,244,245,1);"></span>
-              </button>
-              <span class="swatch-label">背景</span>
-              <input type="text" data-coloris id="backgroundColor" value="#F4F4F5" class="coloris-hidden" />
+            <div class="control-group checkbox-group">
+              <label class="toggle-switch">
+                <input type="checkbox" id="transparentBackground" />
+                <span class="slider"></span>
+              </label>
+              <span>透明背景</span>
             </div>
 
-            <div class="color-swatch-item">
-              <button class="color-swatch-btn" id="areaColor-swatch" title="区域颜色">
-                <span class="swatch-preview" id="areaColor-preview" style="background: rgba(147,197,253,1);"></span>
-              </button>
-              <span class="swatch-label">区域</span>
-              <input type="text" data-coloris id="areaColor" value="#93C5FD" class="coloris-hidden" />
+            <div class="color-swatches-col">
+              <div class="color-swatch-item" id="backgroundColorGroup">
+                <button class="color-swatch-btn" id="backgroundColor-swatch" title="背景颜色">
+                  <span class="swatch-preview" id="backgroundColor-preview" style="background: #ffffff;"></span>
+                </button>
+                <span class="swatch-label">背景</span>
+                <input type="text" data-coloris id="backgroundColor" value="#ffffff" class="coloris-hidden" />
+              </div>
+
+              <div class="color-swatch-item">
+                <button class="color-swatch-btn" id="areaColor-swatch" title="区域颜色">
+                  <span class="swatch-preview" id="areaColor-preview" style="background: #3b82f6;"></span>
+                </button>
+                <span class="swatch-label">区域</span>
+                <input type="text" data-coloris id="areaColor" value="#3b82f6" class="coloris-hidden" />
+              </div>
+
+              <div class="color-swatch-item">
+                <button class="color-swatch-btn" id="borderColor-swatch" title="边框颜色">
+                  <span class="swatch-preview" id="borderColor-preview"
+                    style="background: rgba(255,255,255,0.5);"></span>
+                </button>
+                <span class="swatch-label">边框</span>
+                <input type="text" data-coloris id="borderColor" value="rgba(255,255,255,0.5)" class="coloris-hidden" />
+              </div>
             </div>
 
-            <div class="color-swatch-item">
-              <button class="color-swatch-btn" id="borderColor-swatch" title="边框颜色">
-                <span class="swatch-preview" id="borderColor-preview" style="background: rgba(255,255,255,1);"></span>
-              </button>
-              <span class="swatch-label">边框</span>
-              <input type="text" data-coloris id="borderColor" value="#FFFFFF" class="coloris-hidden" />
-            </div>
-          </div>
-
-          <div class="control-group">
-            <label for="borderWidth">边框宽度 <span class="val-display" id="borderWidthVal">1px</span></label>
-            <input type="range" id="borderWidth" value="1" min="0" max="5" step="0.5" class="range-input" />
-          </div>
-
-        </div>
-      </details>
-
-      <!-- 文本标签 -->
-      <details class="control-section" open>
-        <summary class="section-title">文本标签</summary>
-        <div class="section-content">
-
-          <div class="control-group checkbox-group">
-            <label class="toggle-switch">
-              <input type="checkbox" id="showLabel" checked />
-              <span class="slider"></span>
-            </label>
-            <span>显示标签</span>
-          </div>
-
-          <div class="color-swatches-row">
-            <div class="color-swatch-item">
-              <button class="color-swatch-btn" id="labelColor-swatch" title="标签颜色">
-                <span class="swatch-preview" id="labelColor-preview" style="background: rgba(82,82,91,1);"></span>
-              </button>
-              <span class="swatch-label">标签色</span>
-              <input type="text" data-coloris id="labelColor" value="#52525B" class="coloris-hidden" />
+            <div class="control-group">
+              <label for="borderWidth">边框 <span class="val-display" id="borderWidthVal">1px</span></label>
+              <input type="range" id="borderWidth" value="1" min="0" max="5" step="0.5" class="range-input" />
             </div>
           </div>
 
-          <div class="control-group">
-            <label for="labelFontSize">字体大小 <span class="val-display" id="labelFontSizeVal">12px</span></label>
-            <input type="range" id="labelFontSize" value="12" min="8" max="24" step="1" class="range-input" />
+          <!-- 分隔线 -->
+          <div class="style-divider"></div>
+
+          <!-- 右列：文本标签 -->
+          <div class="style-col">
+            <div class="style-col-header">文本标签</div>
+
+            <div class="control-group checkbox-group">
+              <label class="toggle-switch">
+                <input type="checkbox" id="showLabel" checked />
+                <span class="slider"></span>
+              </label>
+              <span>显示标签</span>
+            </div>
+
+            <div class="color-swatches-col">
+              <div class="color-swatch-item">
+                <button class="color-swatch-btn" id="labelColor-swatch" title="标签颜色">
+                  <span class="swatch-preview" id="labelColor-preview" style="background: #ffffff;"></span>
+                </button>
+                <span class="swatch-label">标签色</span>
+                <input type="text" data-coloris id="labelColor" value="#ffffff" class="coloris-hidden" />
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label for="labelFontSize">字号 <span class="val-display" id="labelFontSizeVal">12px</span></label>
+              <input type="range" id="labelFontSize" value="12" min="8" max="24" step="1" class="range-input" />
+            </div>
           </div>
 
         </div>
@@ -180,32 +184,33 @@
         <summary class="section-title">导出配置</summary>
         <div class="section-content">
 
-          <div class="control-group">
-            <label for="exportRatio">清晰度 (Pixel Ratio)</label>
-            <div class="custom-select-wrapper">
-              <select id="exportRatio" class="select-input">
-                <option value="1">1x (普通)</option>
-                <option value="2" selected>2x (高清)</option>
-                <option value="4">4x (超清)</option>
-              </select>
-              <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
+          <div class="export-options-row">
+            <div class="control-group export-option">
+              <label for="exportRatio">清晰度</label>
+              <div class="custom-select-wrapper">
+                <select id="exportRatio" class="select-input">
+                  <option value="1">1x 普通</option>
+                  <option value="2" selected>2x 高清</option>
+                  <option value="4">4x 超清</option>
+                </select>
+                <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
             </div>
-          </div>
-
-          <div class="control-group">
-            <label for="exportFormat">图片格式</label>
-            <div class="custom-select-wrapper">
-              <select id="exportFormat" class="select-input">
-                <option value="png" selected>PNG (图片)</option>
-                <option value="svg">SVG (矢量图)</option>
-              </select>
-              <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
+            <div class="control-group export-option">
+              <label for="exportFormat">格式</label>
+              <div class="custom-select-wrapper">
+                <select id="exportFormat" class="select-input">
+                  <option value="png" selected>PNG</option>
+                  <option value="svg">SVG</option>
+                </select>
+                <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
             </div>
           </div>
 
