@@ -26,7 +26,6 @@ body {
 .sidebar-header {
   height: 60px;
   background-color: var(--panel-bg);
-  border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -157,7 +156,7 @@ body {
 
 /* Accordion Styling */
 .control-section {
-  border-bottom: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
 }
 
 /* 2-Column Style & Label Grid */
@@ -212,9 +211,9 @@ body {
 }
 
 .section-title {
-  padding: 16px 20px;
+  padding: 12px 20px;
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-main);
   background-color: var(--bg-color);
@@ -448,6 +447,7 @@ details[open] .section-title {
   flex-direction: row;
   align-items: center;
   gap: 12px;
+  font-size: 0.875rem;
 }
 
 .toggle-switch {
