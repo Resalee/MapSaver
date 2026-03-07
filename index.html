@@ -175,6 +175,54 @@
         </div>
       </details>
 
+      <!-- 导出配置 -->
+      <details class="control-section" open>
+        <summary class="section-title">导出配置</summary>
+        <div class="section-content">
+
+          <div class="control-group">
+            <label for="exportRatio">清晰度 (Pixel Ratio)</label>
+            <div class="custom-select-wrapper">
+              <select id="exportRatio" class="select-input">
+                <option value="1">1x (普通)</option>
+                <option value="2" selected>2x (高清)</option>
+                <option value="4">4x (超清)</option>
+              </select>
+              <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label for="exportFormat">图片格式</label>
+            <div class="custom-select-wrapper">
+              <select id="exportFormat" class="select-input">
+                <option value="png" selected>PNG (图片)</option>
+                <option value="svg">SVG (矢量图)</option>
+              </select>
+              <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+
+          <button id="exportMapBtn" class="btn btn-primary w-full mt-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+              style="margin-right: 4px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            导出地图
+          </button>
+
+        </div>
+      </details>
+
     </aside>
 
     <!-- 地图区域 (右侧) -->

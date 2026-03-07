@@ -87,6 +87,11 @@ const labelColorInput = document.getElementById("labelColor");
 const labelFontSizeInput = document.getElementById("labelFontSize");
 const labelFontSizeVal = document.getElementById("labelFontSizeVal");
 
+// Export Controls
+const exportRatioSelect = document.getElementById("exportRatio");
+const exportFormatSelect = document.getElementById("exportFormat");
+const exportMapBtn = document.getElementById("exportMapBtn");
+
 // Color Swatch definitions
 const colorSwatches = [
   {
@@ -242,6 +247,19 @@ const initializeChart = (mapName) => {
   if (!echarts.getMap(mapName)) return;
 
   myChart = echarts.init(chartDom, null, { renderer: "canvas" });
+
+  // Map Drill-down click handler
+  myChart.on("click", (params) => {
+    if (!params.name) return;
+    const clickedProvince = PROVINCES.find(
+      (p) => p.name.includes(params.name) || params.name.includes(p.name),
+    );
+    // If it's a valid province and we are not already viewing it, drill down
+    if (clickedProvince && provinceSelect.value !== clickedProvince.adcode) {
+      provinceSelect.value = clickedProvince.adcode;
+      provinceSelect.dispatchEvent(new Event("change"));
+    }
+  });
 
   const initialBackgroundColor = transparentBackgroundInput.checked
     ? "transparent"
@@ -421,6 +439,61 @@ const bindGlobalEventListeners = () => {
   if (loadMapJsonBtn) {
     loadMapJsonBtn.addEventListener("click", () => {
       loadMapFromJsonString(geoJsonText.value);
+    });
+  }
+
+  // Advanced Export
+  if (exportMapBtn) {
+    exportMapBtn.addEventListener("click", () => {
+      if (!myChart) return;
+      const format = exportFormatSelect.value;
+      const ratio = parseInt(exportRatioSelect.value, 10);
+      const bg = transparentBackgroundInput.checked
+        ? "transparent"
+        : backgroundColorInput.value;
+
+      const currentOption = myChart.getOption();
+      const exportOption = JSON.parse(JSON.stringify(currentOption));
+      if (exportOption.toolbox) exportOption.toolbox[0].show = false;
+
+      let filename = `${currentMapName}_export`;
+
+      if (format === "png") {
+        // Temporarily hide toolbox from export image
+        myChart.setOption({ toolbox: { show: false } });
+        const downloadUrl = myChart.getDataURL({
+          type: "png",
+          pixelRatio: ratio,
+          backgroundColor: bg,
+        });
+        myChart.setOption({ toolbox: { show: true } });
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = filename + ".png";
+        link.click();
+      } else if (format === "svg") {
+        // Create an offline SVG chart instance
+        const tempDiv = document.createElement("div");
+        tempDiv.style.width = chartDom.clientWidth + "px";
+        tempDiv.style.height = chartDom.clientHeight + "px";
+        const svgChart = echarts.init(tempDiv, null, { renderer: "svg" });
+        exportOption.backgroundColor = bg;
+        svgChart.setOption(exportOption);
+
+        const svgString = svgChart.renderToSVGString();
+        svgChart.dispose();
+
+        const blob = new Blob([svgString], {
+          type: "image/svg+xml;charset=utf-8",
+        });
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = filename + ".svg";
+        link.click();
+        URL.revokeObjectURL(downloadUrl);
+      }
     });
   }
 

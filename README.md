@@ -1,5 +1,7 @@
 # MapSaver 🌍
 
+**English** | [简体中文](./README_zh.md)
+
 A simple, fast, and modern web application to generate and download customized Echarts maps from GeoJSON data.
 
 ## Features ✨
@@ -59,6 +61,18 @@ npm run build
 ```
 
 The output will be generated in the `dist` directory.
+
+### Deploy to Vercel 🚀
+
+The easiest way to deploy this Vite application is using [Vercel](https://vercel.com). Since it's a static frontend app, Vercel natively supports it with zero configuration.
+
+1. Push your code to a GitHub repository.
+2. Log in to [Vercel](https://vercel.com) and click **Add New Project**.
+3. Import your GitHub repository.
+4. Vercel will auto-detect it as a Vite project. The default settings are correct:
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+5. Click **Deploy**. In less than a minute, your MapSaver app will be live and ready to be used as a showcase for your blog!
 
 ## Usage 💡
 
