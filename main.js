@@ -87,6 +87,30 @@ const labelColorInput = document.getElementById("labelColor");
 const labelFontSizeInput = document.getElementById("labelFontSize");
 const labelFontSizeVal = document.getElementById("labelFontSizeVal");
 
+// Color Swatch definitions
+const colorSwatches = [
+  {
+    inputId: "backgroundColor",
+    swatchId: "backgroundColor-swatch",
+    previewId: "backgroundColor-preview",
+  },
+  {
+    inputId: "areaColor",
+    swatchId: "areaColor-swatch",
+    previewId: "areaColor-preview",
+  },
+  {
+    inputId: "borderColor",
+    swatchId: "borderColor-swatch",
+    previewId: "borderColor-preview",
+  },
+  {
+    inputId: "labelColor",
+    swatchId: "labelColor-swatch",
+    previewId: "labelColor-preview",
+  },
+];
+
 let currentMapName = "customMap";
 
 // -----------------------------------------------------------------------------
@@ -400,21 +424,35 @@ const bindGlobalEventListeners = () => {
     });
   }
 
+  // Color Swatch - Open Coloris on click + update preview on change
+  colorSwatches.forEach(({ inputId, swatchId, previewId }) => {
+    const input = document.getElementById(inputId);
+    const swatch = document.getElementById(swatchId);
+    const preview = document.getElementById(previewId);
+    if (!input || !swatch || !preview) return;
+
+    // Clicking swatch opens color picker
+    swatch.addEventListener("click", () => {
+      input.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    });
+
+    // When Coloris updates the value, update the preview and chart
+    input.addEventListener("change", () => {
+      preview.style.background = input.value;
+      updateChart();
+    });
+    input.addEventListener("input", () => {
+      preview.style.background = input.value;
+    });
+  });
+
   // Style Toggles & Inputs
   transparentBackgroundInput.addEventListener("change", () => {
     updateBackgroundColorControlsState();
     updateChart();
   });
 
-  const inputs = [
-    backgroundColorInput,
-    areaColorInput,
-    borderColorInput,
-    borderWidthInput,
-    showLabelInput,
-    labelColorInput,
-    labelFontSizeInput,
-  ];
+  const inputs = [borderWidthInput, showLabelInput, labelFontSizeInput];
 
   inputs.forEach((input) => {
     if (input) {

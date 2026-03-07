@@ -3,17 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>
-    Echarts 地图参数修改与下载 - 自定义地图URL, Coloris RGBA, 标签控制,
-    透明背景选项
-  </title>
+  <title>MapSaver - 地图可视化与下载工具</title>
 </head>
 
 <body>
-  <!-- 顶部导航栏 -->
+  <!-- 顶部导航栏 (简化) -->
   <header class="header">
     <div class="header-logo">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21 3 6"></polygon>
         <line x1="9" y1="3" x2="9" y2="18"></line>
@@ -21,16 +18,12 @@
       </svg>
       <h1>MapSaver</h1>
     </div>
-    <div class="header-links">
-      <a rel="noopener" href="https://datav.aliyun.com/portal/school/atlas/area_selector" target="_blank"
-        class="btn btn-outline" title="前往 DataV 获取更多 JSON">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-          <polyline points="15 3 21 3 21 9"></polyline>
-          <line x1="10" y1="14" x2="21" y2="3"></line>
+    <div class="header-actions">
+      <a rel="noopener" href="https://github.com" target="_blank" class="header-icon-btn" title="GitHub">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z" />
         </svg>
-        获取地图 JSON
       </a>
     </div>
   </header>
@@ -39,7 +32,7 @@
     <!-- 控制面板 (左侧) -->
     <aside class="controls">
 
-      <!-- 数据源 (Data Source) Accordion -->
+      <!-- 数据源 -->
       <details class="control-section" open>
         <summary class="section-title">数据源</summary>
         <div class="section-content">
@@ -52,25 +45,35 @@
 
           <div id="tab-builtin" class="tab-content active">
             <div class="control-group">
-              <label for="provinceSelect">省份/直辖市:</label>
-              <select id="provinceSelect" class="select-input">
-                <option value="100000">全国 (China)</option>
-                <!-- JS will populate options -->
-              </select>
+              <label for="provinceSelect">省份 / 直辖市</label>
+              <div class="custom-select-wrapper">
+                <select id="provinceSelect" class="select-input">
+                  <option value="100000">全国 (China)</option>
+                </select>
+                <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
             </div>
             <div class="control-group" id="cityGroup" style="display: none;">
-              <label for="citySelect">地级市:</label>
-              <select id="citySelect" class="select-input">
-                <option value="all">-- 全省 --</option>
-                <!-- JS will populate options -->
-              </select>
+              <label for="citySelect">地级市</label>
+              <div class="custom-select-wrapper">
+                <select id="citySelect" class="select-input">
+                  <option value="all">-- 全省 --</option>
+                </select>
+                <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
             </div>
-            <button id="loadBuiltinBtn" class="btn btn-primary w-full mt-2">加载内置地图</button>
+            <button id="loadBuiltinBtn" class="btn btn-primary w-full mt-2">加载地图</button>
           </div>
 
           <div id="tab-url" class="tab-content">
             <div class="control-group">
-              <label for="geoJsonUrl">GeoJSON 链接:</label>
+              <label for="geoJsonUrl">GeoJSON 链接</label>
               <div class="input-with-button">
                 <input type="text" id="geoJsonUrl" placeholder="https://"
                   value="https://geo.datav.aliyun.com/areas_v3/bound/430000_full.json" />
@@ -81,17 +84,17 @@
 
           <div id="tab-json" class="tab-content">
             <div class="control-group">
-              <label for="geoJsonText">粘贴 GeoJSON 文本:</label>
+              <label for="geoJsonText">粘贴 GeoJSON 文本</label>
               <textarea id="geoJsonText" rows="5" class="textarea-input"
                 placeholder='{"type":"FeatureCollection","features":[]}'></textarea>
-              <button id="loadMapJsonBtn" class="btn btn-primary mt-2">渲染地图</button>
+              <button id="loadMapJsonBtn" class="btn btn-primary w-full mt-2">渲染地图</button>
             </div>
           </div>
 
         </div>
       </details>
 
-      <!-- 地图样式 (Map Style) Accordion -->
+      <!-- 地图样式 -->
       <details class="control-section" open>
         <summary class="section-title">地图样式</summary>
         <div class="section-content">
@@ -101,35 +104,47 @@
               <input type="checkbox" id="transparentBackground" />
               <span class="slider"></span>
             </label>
-            <label for="transparentBackground">透明背景</label>
+            <span>透明背景</span>
           </div>
 
-          <div class="settings-grid">
-            <div class="control-group" id="backgroundColorGroup">
-              <label for="backgroundColor">背景颜色:</label>
-              <input type="text" data-coloris id="backgroundColor" value="rgba(255, 255, 255, 1)" />
+          <!-- 颜色色块 (3列) -->
+          <div class="color-swatches-row">
+            <div class="color-swatch-item" id="backgroundColorGroup">
+              <button class="color-swatch-btn" id="backgroundColor-swatch" title="背景颜色">
+                <span class="swatch-preview" id="backgroundColor-preview"
+                  style="background: rgba(255,255,255,1);"></span>
+              </button>
+              <span class="swatch-label">背景</span>
+              <input type="text" data-coloris id="backgroundColor" value="rgba(255, 255, 255, 1)"
+                class="coloris-hidden" />
             </div>
 
-            <div class="control-group">
-              <label for="areaColor">区域颜色:</label>
-              <input type="text" data-coloris id="areaColor" value="rgba(9, 87, 208, 1)" />
+            <div class="color-swatch-item">
+              <button class="color-swatch-btn" id="areaColor-swatch" title="区域颜色">
+                <span class="swatch-preview" id="areaColor-preview" style="background: rgba(9,87,208,1);"></span>
+              </button>
+              <span class="swatch-label">区域</span>
+              <input type="text" data-coloris id="areaColor" value="rgba(9, 87, 208, 1)" class="coloris-hidden" />
             </div>
 
-            <div class="control-group" style="grid-column: span 2;">
-              <label for="borderColor">边框颜色:</label>
-              <input type="text" data-coloris id="borderColor" value="rgba(238, 238, 238, 1)" />
+            <div class="color-swatch-item">
+              <button class="color-swatch-btn" id="borderColor-swatch" title="边框颜色">
+                <span class="swatch-preview" id="borderColor-preview" style="background: rgba(238,238,238,1);"></span>
+              </button>
+              <span class="swatch-label">边框</span>
+              <input type="text" data-coloris id="borderColor" value="rgba(238, 238, 238, 1)" class="coloris-hidden" />
             </div>
           </div>
 
-          <div class="control-group mt-2">
-            <label for="borderWidth">边框宽度: <span class="val-display" id="borderWidthVal">1px</span></label>
+          <div class="control-group">
+            <label for="borderWidth">边框宽度 <span class="val-display" id="borderWidthVal">1px</span></label>
             <input type="range" id="borderWidth" value="1" min="0" max="5" step="0.5" class="range-input" />
           </div>
 
         </div>
       </details>
 
-      <!-- 文本标签 (Labels) Accordion -->
+      <!-- 文本标签 -->
       <details class="control-section" open>
         <summary class="section-title">文本标签</summary>
         <div class="section-content">
@@ -139,16 +154,21 @@
               <input type="checkbox" id="showLabel" checked />
               <span class="slider"></span>
             </label>
-            <label for="showLabel">显示标签</label>
+            <span>显示标签</span>
           </div>
 
-          <div class="control-group mt-2">
-            <label for="labelColor">标签颜色:</label>
-            <input type="text" data-coloris id="labelColor" value="rgba(255, 255, 255, 1)" />
+          <div class="color-swatches-row">
+            <div class="color-swatch-item">
+              <button class="color-swatch-btn" id="labelColor-swatch" title="标签颜色">
+                <span class="swatch-preview" id="labelColor-preview" style="background: rgba(255,255,255,1);"></span>
+              </button>
+              <span class="swatch-label">标签色</span>
+              <input type="text" data-coloris id="labelColor" value="rgba(255, 255, 255, 1)" class="coloris-hidden" />
+            </div>
           </div>
 
-          <div class="control-group mt-2">
-            <label for="labelFontSize">字体大小: <span class="val-display" id="labelFontSizeVal">12px</span></label>
+          <div class="control-group">
+            <label for="labelFontSize">字体大小 <span class="val-display" id="labelFontSizeVal">12px</span></label>
             <input type="range" id="labelFontSize" value="12" min="8" max="24" step="1" class="range-input" />
           </div>
 
