@@ -45,28 +45,30 @@
           </div>
 
           <div id="tab-builtin" class="tab-content active">
-            <div class="control-group">
-              <label for="provinceSelect">省份 / 直辖市</label>
-              <div class="custom-select-wrapper">
-                <select id="provinceSelect" class="select-input">
-                  <option value="100000">全国 (China)</option>
-                </select>
-                <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
+            <div class="builtin-selects-row">
+              <div class="control-group">
+                <label for="provinceSelect">省份 / 直辖市</label>
+                <div class="custom-select-wrapper">
+                  <select id="provinceSelect" class="select-input">
+                    <option value="100000">全国 (China)</option>
+                  </select>
+                  <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
               </div>
-            </div>
-            <div class="control-group" id="cityGroup" style="display: none;">
-              <label for="citySelect">地级市</label>
-              <div class="custom-select-wrapper">
-                <select id="citySelect" class="select-input">
-                  <option value="all">-- 全省 --</option>
-                </select>
-                <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
+              <div class="control-group" id="cityGroup" style="display: none;">
+                <label for="citySelect">地级市</label>
+                <div class="custom-select-wrapper">
+                  <select id="citySelect" class="select-input">
+                    <option value="all">-- 全省 --</option>
+                  </select>
+                  <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
               </div>
             </div>
             <button id="loadBuiltinBtn" class="btn btn-primary w-full mt-2">加载地图</button>
@@ -77,7 +79,7 @@
               <label for="geoJsonUrl">GeoJSON 链接</label>
               <div class="input-with-button">
                 <input type="text" id="geoJsonUrl" placeholder="https://"
-                  value="https://geo.datav.aliyun.com/areas_v3/bound/430000_full.json" />
+                  value="https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json" />
                 <button id="loadMapUrlBtn" class="btn btn-primary">加载</button>
               </div>
             </div>
@@ -106,7 +108,7 @@
 
             <div class="control-group checkbox-group">
               <label class="toggle-switch">
-                <input type="checkbox" id="transparentBackground" />
+                <input type="checkbox" id="transparentBackground" checked />
                 <span class="slider"></span>
               </label>
               <span>透明背景</span>

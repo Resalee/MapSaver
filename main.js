@@ -7,7 +7,7 @@ import "./style.css";
 // Constants and Data
 // -----------------------------------------------------------------------------
 const PROVINCES = [
-  { name: "全国 (China)", adcode: "100000" },
+  { name: "中国", adcode: "100000" },
   { name: "北京市", adcode: "110000" },
   { name: "天津市", adcode: "120000" },
   { name: "河北省", adcode: "130000" },
@@ -25,7 +25,7 @@ const PROVINCES = [
   { name: "山东省", adcode: "370000" },
   { name: "河南省", adcode: "410000" },
   { name: "湖北省", adcode: "420000" },
-  { name: "湖南省 (Hunan)", adcode: "430000" },
+  { name: "湖南省", adcode: "430000" },
   { name: "广东省", adcode: "440000" },
   { name: "广西壮族自治区", adcode: "450000" },
   { name: "海南省", adcode: "460000" },
@@ -547,8 +547,8 @@ const bindGlobalEventListeners = () => {
 initProvinceDropdown();
 updateDisplays();
 
-// Initial Load (Hunan province)
-loadMapFromUrl(getAliyunGeoJsonUrl(provinceSelect.value), true);
+// Initial Load (China)
+loadMapFromUrl(getAliyunGeoJsonUrl("100000"), true);
 
 Coloris.init();
 Coloris({
