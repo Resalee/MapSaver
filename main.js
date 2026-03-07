@@ -128,10 +128,10 @@ const initProvinceDropdown = () => {
     const opt = document.createElement("option");
     opt.value = p.adcode;
     opt.textContent = p.name;
-    // Default to Hunan as previously set
-    if (p.adcode === "430000") opt.selected = true;
     provinceSelect.appendChild(opt);
   });
+  // Default to China
+  provinceSelect.value = "100000";
 };
 
 const getAliyunGeoJsonUrl = (adcode) => {
@@ -202,11 +202,12 @@ const populateCityDropdown = (geoJson) => {
   citySelect.innerHTML = '<option value="all">-- 全省 --</option>';
 
   if (geoJson && geoJson.features && geoJson.features.length > 0) {
-    // Only show city dropdown if there are selectable sub-regions that aren't the province itself
-    const hasSubRegions = geoJson.features.some(
-      (f) => f.properties && f.properties.adcode,
-    );
-    if (hasSubRegions && provinceSelect.value !== "100000") {
+    // Municipalities (Beijing, Tianjin, Shanghai, Chongqing) should not show city dropdowns
+    // which would try to load districts as cities and fail the current Aliyun API pattern.
+    const municipalities = ["110000", "120000", "310000", "500000"];
+    const isMunicipality = municipalities.includes(provinceSelect.value);
+
+    if (hasSubRegions && provinceSelect.value !== "100000" && !isMunicipality) {
       cityGroup.style.display = "flex";
       geoJson.features.forEach((feature) => {
         const props = feature.properties;

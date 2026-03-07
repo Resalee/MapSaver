@@ -211,6 +211,19 @@ body {
   flex: 1;
 }
 
+.export-option,
+.builtin-selects-row .control-group {
+  padding: 16px 20px;
+}
+
+.sidebar-tip {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+  text-align: center;
+  opacity: 0.8;
+}
+
 .section-title {
   padding: 16px 20px;
   margin: 0;
