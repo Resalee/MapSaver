@@ -72,7 +72,6 @@
               </div>
             </div>
             <button id="loadBuiltinBtn" class="btn btn-primary w-full mt-2">加载地图</button>
-            <p class="sidebar-tip">💡 提示：在地图上直接点击省份可快速下钻</p>
           </div>
 
           <div id="tab-url" class="tab-content">
@@ -239,6 +238,13 @@
       <div id="loading" class="loading-overlay">
         <div class="spinner"></div>
         <span>加载地图数据中...</span>
+      </div>
+      <div class="map-hint">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        点击地图上的任意区域，可直接进入该区域的详细地图
       </div>
     </main>
   </div>

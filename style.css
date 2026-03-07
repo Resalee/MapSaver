@@ -211,19 +211,6 @@ body {
   flex: 1;
 }
 
-.export-option,
-.builtin-selects-row .control-group {
-  padding: 16px 20px;
-}
-
-.sidebar-tip {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 10px;
-  text-align: center;
-  opacity: 0.8;
-}
-
 .section-title {
   padding: 16px 20px;
   margin: 0;
@@ -424,8 +411,8 @@ details[open] .section-title {
 }
 
 .color-swatch-btn {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
   border: 2px solid var(--border-color);
   padding: 3px;
@@ -518,9 +505,28 @@ input:checked + .slider:before {
 .chart-main {
   flex: 1;
   position: relative;
-  background-color: var(--bg-color);
   display: flex;
   flex-direction: column;
+}
+
+/* Drill-down hint */
+.map-hint {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.45);
+  color: rgba(255,255,255,0.9);
+  font-size: 0.75rem;
+  padding: 5px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  pointer-events: none;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+  z-index: 5;
 }
 
 #mapChart {
