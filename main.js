@@ -293,19 +293,6 @@ const initializeChart = (mapName) => {
         return `${params.name}<br/>${params.value !== undefined ? params.value : ""}`;
       },
     },
-    toolbox: {
-      show: true,
-      orient: "vertical",
-      left: "left",
-      top: "top",
-      feature: {
-        restore: {},
-        saveAsImage: {
-          pixelRatio: 2,
-          backgroundColor: initialBackgroundColor,
-        },
-      },
-    },
     geo: {
       map: mapName,
       roam: true,
@@ -322,7 +309,7 @@ const initializeChart = (mapName) => {
       },
       emphasis: {
         itemStyle: {
-          areaColor: "#64748b", // modern muted hover color
+          areaColor: "#BFDBFE", // modern light blue hover color
         },
         label: {
           show: true,
@@ -364,16 +351,12 @@ const updateChart = () => {
     ? "transparent"
     : backgroundColorInput.value;
   currentOption.backgroundColor = newBackgroundColor;
-  if (currentOption.toolbox?.[0]?.feature?.saveAsImage) {
-    currentOption.toolbox[0].feature.saveAsImage.backgroundColor =
-      newBackgroundColor;
-  }
 
   // Styles
   const newBorderWidth = parseFloat(borderWidthInput.value);
   const newFontSize = parseFloat(labelFontSizeInput.value);
 
-  if (currentOption.geo?.[0]) {
+  if (currentOption.geo && currentOption.geo[0]) {
     const geo = currentOption.geo[0];
     geo.itemStyle = {
       ...geo.itemStyle,
@@ -391,7 +374,7 @@ const updateChart = () => {
     geo.emphasis = geo.emphasis || { itemStyle: {}, label: {} };
     geo.emphasis.itemStyle = {
       ...geo.emphasis.itemStyle,
-      areaColor: "#64748b",
+      areaColor: "#BFDBFE",
     };
     geo.emphasis.label = {
       ...geo.emphasis.label,

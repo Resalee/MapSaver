@@ -22,37 +22,37 @@ body {
   overflow: hidden;
 }
 
-/* Header */
-.header {
+/* Sidebar Header */
+.sidebar-header {
   height: 60px;
   background-color: var(--panel-bg);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  box-shadow: var(--shadow-sm);
-  z-index: 10;
+  padding: 0 20px;
+  flex-shrink: 0;
 }
 
 .header-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   color: var(--primary);
 }
 
 .header-logo h1 {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
   margin: 0;
   color: var(--text-main);
+  letter-spacing: -0.02em;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .header-icon-btn {
