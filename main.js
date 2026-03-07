@@ -251,13 +251,33 @@ const initializeChart = (mapName) => {
   // Map Drill-down click handler
   myChart.on("click", (params) => {
     if (!params.name) return;
+
+    // 1. Check if clicked region is a Province (drilling down from National)
     const clickedProvince = PROVINCES.find(
       (p) => p.name.includes(params.name) || params.name.includes(p.name),
     );
-    // If it's a valid province and we are not already viewing it, drill down
     if (clickedProvince && provinceSelect.value !== clickedProvince.adcode) {
       provinceSelect.value = clickedProvince.adcode;
       provinceSelect.dispatchEvent(new Event("change"));
+      return;
+    }
+
+    // 2. Check if clicked region is a City (drilling down from Province)
+    if (cityGroup.style.display !== "none") {
+      let matchedCityAdcode = null;
+      for (const opt of citySelect.options) {
+        if (
+          opt.value !== "all" &&
+          (opt.text.includes(params.name) || params.name.includes(opt.text))
+        ) {
+          matchedCityAdcode = opt.value;
+          break;
+        }
+      }
+      if (matchedCityAdcode && citySelect.value !== matchedCityAdcode) {
+        citySelect.value = matchedCityAdcode;
+        loadBuiltinBtn.click(); // Trigger the map load for the city
+      }
     }
   });
 
