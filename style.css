@@ -509,24 +509,77 @@ input:checked + .slider:before {
   flex-direction: column;
 }
 
-/* Drill-down hint */
-.map-hint {
+/* Breadcrumb Navigation */
+.map-breadcrumb {
   position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.45);
-  color: rgba(255,255,255,0.9);
-  font-size: 0.75rem;
-  padding: 5px 12px;
-  border-radius: 20px;
+  top: 16px;
+  left: 20px;
+  z-index: 10;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 6px 14px;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.breadcrumb-item {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.breadcrumb-item:hover {
+  color: var(--primary);
+}
+
+.breadcrumb-item.active {
+  color: var(--text-main);
+  font-weight: 600;
+  cursor: default;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "/";
+  margin-right: 6px;
+  color: #cbd5e1;
+}
+
+/* Refined Map Hint */
+.map-hint {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
   pointer-events: none;
+}
+
+.hint-content {
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   white-space: nowrap;
-  backdrop-filter: blur(4px);
-  z-index: 5;
+}
+
+.hint-content svg {
+  opacity: 0.9;
+  color: #93c5fd; /* Soft blue icon */
 }
 
 #mapChart {

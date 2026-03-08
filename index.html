@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MapSaver - 地图可视化与下载工具</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="stylesheet" href="/style.css" />
 </head>
 
 <body>
@@ -50,7 +52,7 @@
                 <label for="provinceSelect">省份 / 直辖市</label>
                 <div class="custom-select-wrapper">
                   <select id="provinceSelect" class="select-input">
-                    <option value="100000">全国 (China)</option>
+                    <option value="100000">中国</option>
                   </select>
                   <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -234,17 +236,28 @@
 
     <!-- 地图区域 (右侧) -->
     <main class="chart-main">
+      <!-- 面包屑导航 -->
+      <nav id="mapBreadcrumb" class="map-breadcrumb">
+        <span class="breadcrumb-item active" data-adcode="100000">全国</span>
+      </nav>
+
       <div id="mapChart"></div>
+
       <div id="loading" class="loading-overlay">
         <div class="spinner"></div>
         <span>加载地图数据中...</span>
       </div>
+
       <div class="map-hint">
-        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        </svg>
-        点击地图上的任意区域，可直接进入该区域的详细地图（不含乡镇级）
+        <div class="hint-content">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>点击区域可下钻至细节地图（不含乡镇级）</span>
+        </div>
       </div>
     </main>
   </div>

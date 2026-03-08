@@ -1,7 +1,18 @@
-import * as echarts from "echarts";
+import * as echarts from "echarts/core";
+import { MapChart } from "echarts/charts";
+import { TooltipComponent, GeoComponent } from "echarts/components";
+import { CanvasRenderer, SVGRenderer } from "echarts/renderers";
+
 import Coloris from "@melloware/coloris";
 import "@melloware/coloris/dist/coloris.css";
-import "./style.css";
+
+echarts.use([
+  MapChart,
+  TooltipComponent,
+  GeoComponent,
+  CanvasRenderer,
+  SVGRenderer,
+]);
 
 // -----------------------------------------------------------------------------
 // Constants and Data
@@ -138,6 +149,47 @@ const getAliyunGeoJsonUrl = (adcode) => {
   return `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}_full.json`;
 };
 
+// --- Color Helpers ---
+const darkenColor = (color, amount) => {
+  let r,
+    g,
+    b,
+    a = 1;
+
+  if (color.startsWith("#")) {
+    let hex = color.replace("#", "");
+    if (hex.length === 3)
+      hex = hex
+        .split("")
+        .map((c) => c + c)
+        .join("");
+    if (hex.length === 8) {
+      a = parseInt(hex.substring(6, 8), 16) / 255;
+      hex = hex.substring(0, 6);
+    }
+    r = parseInt(hex.substring(0, 2), 16);
+    g = parseInt(hex.substring(2, 4), 16);
+    b = parseInt(hex.substring(4, 6), 16);
+  } else if (color.startsWith("rgb")) {
+    const parts = color.match(/[\d.]+/g);
+    if (!parts) return color;
+    r = parseInt(parts[0]);
+    g = parseInt(parts[1]);
+    b = parseInt(parts[2]);
+    if (parts[3]) a = parseFloat(parts[3]);
+  } else {
+    return color; // 如果是 transparent 或颜色英文名，直接返回
+  }
+
+  r = Math.max(0, Math.floor(r * (1 - amount)));
+  g = Math.max(0, Math.floor(g * (1 - amount)));
+  b = Math.max(0, Math.floor(b * (1 - amount)));
+
+  return a === 1
+    ? `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`
+    : `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+
 const setLoading = (isLoading, message = "加载地图数据中...") => {
   if (isLoading) {
     loadingDom.style.display = "flex";
@@ -170,6 +222,7 @@ const renderGeoJson = (geoJson, mapName) => {
 };
 
 // Fetch and render map from URL
+// Fetch and render map from URL
 const loadMapFromUrl = async (url, isDropdownCheck = false) => {
   if (!url) return;
   setLoading(true);
@@ -191,6 +244,8 @@ const loadMapFromUrl = async (url, isDropdownCheck = false) => {
     }
 
     renderGeoJson(geoJson, currentMapName);
+
+    updateBreadcrumbs();
   } catch (error) {
     console.error("Error loading map:", error);
     handleLoadError(error.message);
@@ -201,11 +256,10 @@ const loadMapFromUrl = async (url, isDropdownCheck = false) => {
 const populateCityDropdown = (geoJson) => {
   citySelect.innerHTML = '<option value="all">-- 全省 --</option>';
 
-  // Municipalities (directly-administered cities) have districts, not city-level areas
-  // They should NOT show city dropdown as their sub-features are county/district level
   const MUNICIPALITIES = ["100000", "110000", "120000", "310000", "500000"];
   if (MUNICIPALITIES.includes(provinceSelect.value)) {
     cityGroup.style.display = "none";
+    updateBreadcrumbs();
     return;
   }
 
@@ -230,6 +284,52 @@ const populateCityDropdown = (geoJson) => {
   } else {
     cityGroup.style.display = "none";
   }
+  updateBreadcrumbs();
+};
+
+// --- Breadcrumb Navigation Logic ---
+// --- Breadcrumb Navigation Logic ---
+const updateBreadcrumbs = () => {
+  const breadcrumbNav = document.getElementById("mapBreadcrumb");
+  if (!breadcrumbNav) return;
+
+  const pCode = provinceSelect.value;
+  const pName = PROVINCES.find((p) => p.adcode === pCode)?.name || "省份";
+  const cCode = citySelect.value;
+  const cName =
+    Array.from(citySelect.options).find((opt) => opt.value === cCode)
+      ?.textContent || "";
+
+  let html = `<span class="breadcrumb-item ${pCode === "100000" ? "active" : ""}" data-adcode="100000">全国</span>`;
+
+  if (pCode !== "100000") {
+    html += `<span class="breadcrumb-item ${cCode === "all" ? "active" : ""}" data-adcode="${pCode}">${pName}</span>`;
+  }
+
+  if (cCode !== "all" && cityGroup.style.display !== "none") {
+    html += `<span class="breadcrumb-item active" data-adcode="${cCode}">${cName}</span>`;
+  }
+
+  breadcrumbNav.innerHTML = html;
+
+  // Bind clicks
+  breadcrumbNav
+    .querySelectorAll(".breadcrumb-item:not(.active)")
+    .forEach((item) => {
+      item.onclick = (e) => {
+        const adcode = e.currentTarget.getAttribute("data-adcode");
+        if (adcode === "100000") {
+          provinceSelect.value = "100000";
+          citySelect.value = "all"; // 【新增】返回全国时重置市级状态
+          cityGroup.style.display = "none";
+          loadMapFromUrl(getAliyunGeoJsonUrl("100000"), true);
+        } else {
+          provinceSelect.value = adcode;
+          citySelect.value = "all";
+          loadMapFromUrl(getAliyunGeoJsonUrl(adcode), true);
+        }
+      };
+    });
 };
 
 // Direct JSON loading
@@ -292,6 +392,9 @@ const initializeChart = (mapName) => {
     ? "transparent"
     : backgroundColorInput.value;
 
+  const currentAreaColor = areaColorInput.value;
+  const highlightColor = darkenColor(currentAreaColor, 0.1);
+
   const option = {
     backgroundColor: initialBackgroundColor,
     tooltip: {
@@ -310,13 +413,13 @@ const initializeChart = (mapName) => {
         formatter: "{a}",
       },
       itemStyle: {
-        areaColor: areaColorInput.value,
+        areaColor: currentAreaColor,
         borderColor: borderColorInput.value,
         borderWidth: parseFloat(borderWidthInput.value),
       },
       emphasis: {
         itemStyle: {
-          areaColor: "#BFDBFE", // modern light blue hover color
+          areaColor: highlightColor,
         },
         label: {
           show: true,
@@ -365,9 +468,12 @@ const updateChart = () => {
 
   if (currentOption.geo && currentOption.geo[0]) {
     const geo = currentOption.geo[0];
+    const baseAreaColor = areaColorInput.value;
+    const highlightColor = darkenColor(baseAreaColor, 0.1);
+
     geo.itemStyle = {
       ...geo.itemStyle,
-      areaColor: areaColorInput.value,
+      areaColor: baseAreaColor,
       borderColor: borderColorInput.value,
       borderWidth: newBorderWidth,
     };
@@ -381,7 +487,7 @@ const updateChart = () => {
     geo.emphasis = geo.emphasis || { itemStyle: {}, label: {} };
     geo.emphasis.itemStyle = {
       ...geo.emphasis.itemStyle,
-      areaColor: "#BFDBFE",
+      areaColor: highlightColor,
     };
     geo.emphasis.label = {
       ...geo.emphasis.label,
@@ -400,15 +506,27 @@ const updateChart = () => {
 
 const bindGlobalEventListeners = () => {
   // Tab Switching
+  const breadcrumbNav = document.getElementById("mapBreadcrumb");
+  const mapHint = document.querySelector(".map-hint");
+
   tabBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
-      // Remove active classes
       tabBtns.forEach((b) => b.classList.remove("active"));
       tabContents.forEach((c) => c.classList.remove("active"));
-      // Add active class
+
       const targetId = e.target.getAttribute("data-target");
       e.target.classList.add("active");
       document.getElementById(targetId).classList.add("active");
+
+      if (breadcrumbNav) {
+        if (targetId === "tab-builtin") {
+          breadcrumbNav.style.display = "";
+          mapHint.style.display = "block";
+        } else {
+          breadcrumbNav.style.display = "none";
+          mapHint.style.display = "none";
+        }
+      }
     });
   });
 
@@ -464,7 +582,6 @@ const bindGlobalEventListeners = () => {
 
       const currentOption = myChart.getOption();
       const exportOption = JSON.parse(JSON.stringify(currentOption));
-      if (exportOption.toolbox) exportOption.toolbox[0].show = false;
 
       let filename = `${currentMapName}_export`;
 
@@ -475,8 +592,8 @@ const bindGlobalEventListeners = () => {
           type: "png",
           pixelRatio: ratio,
           backgroundColor: bg,
+          excludeComponents: ["toolbox"],
         });
-        myChart.setOption({ toolbox: { show: true } });
 
         const link = document.createElement("a");
         link.href = downloadUrl;
