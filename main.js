@@ -72,11 +72,8 @@ const cityGroup = document.getElementById("cityGroup");
 const citySelect = document.getElementById("citySelect");
 const loadBuiltinBtn = document.getElementById("loadBuiltinBtn");
 
-// URL controls
-const geoJsonUrlInput = document.getElementById("geoJsonUrl");
-const loadMapUrlBtn = document.getElementById("loadMapUrlBtn");
-
 // JSON Text controls
+const jsonFileInput = document.getElementById("jsonFileInput");
 const geoJsonText = document.getElementById("geoJsonText");
 const loadMapJsonBtn = document.getElementById("loadMapJsonBtn");
 
@@ -139,23 +136,28 @@ const initProvinceDropdown = () => {
     const opt = document.createElement("option");
     opt.value = p.adcode;
     opt.textContent = p.name;
-    // Default to China national map
     if (p.adcode === "100000") opt.selected = true;
     provinceSelect.appendChild(opt);
   });
 };
 
-const getAliyunGeoJsonUrl = (adcode) => {
-  return `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}_full.json`;
+const getLocalMapUrl = (adcode) => {
+  return `/maps/${adcode}.geoJson`;
 };
 
-// --- Color Helpers ---
+const debounce = (func, wait) => {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+};
+
 const darkenColor = (color, amount) => {
   let r,
     g,
     b,
     a = 1;
-
   if (color.startsWith("#")) {
     let hex = color.replace("#", "");
     if (hex.length === 3)
@@ -178,7 +180,7 @@ const darkenColor = (color, amount) => {
     b = parseInt(parts[2]);
     if (parts[3]) a = parseFloat(parts[3]);
   } else {
-    return color; // 如果是 transparent 或颜色英文名，直接返回
+    return color;
   }
 
   r = Math.max(0, Math.floor(r * (1 - amount)));
@@ -209,42 +211,34 @@ const handleLoadError = (errorMsg) => {
   if (spinner) spinner.style.display = "none";
 };
 
-// Main entry point for rendering
 const renderGeoJson = (geoJson, mapName) => {
   if (myChart) {
     myChart.dispose();
     myChart = null;
   }
-
   echarts.registerMap(mapName, geoJson);
   setLoading(false);
   initializeChart(mapName);
 };
 
-// Fetch and render map from URL
-// Fetch and render map from URL
-const loadMapFromUrl = async (url, isDropdownCheck = false) => {
-  if (!url) return;
+const loadMapFile = async (adcode, isDropdownCheck = false) => {
+  if (!adcode) return;
   setLoading(true);
 
-  currentMapName = `map_${url.replace(/[^a-zA-Z0-9]/g, "")}`;
+  currentMapName = `map_${adcode}`;
+  const url = getLocalMapUrl(adcode);
 
   try {
     const response = await fetch(url);
-    if (!response.ok) throw new Error(response.statusText);
+    if (!response.ok)
+      throw new Error("未找到本地地图文件，请确保 public/maps 目录下有该文件");
     const geoJson = await response.json();
 
-    // Check if this is a province load, to populate cities
-    if (
-      url.includes("datav.aliyun.com") &&
-      url.includes("_full.json") &&
-      isDropdownCheck
-    ) {
+    if (isDropdownCheck) {
       populateCityDropdown(geoJson);
     }
 
     renderGeoJson(geoJson, currentMapName);
-
     updateBreadcrumbs();
   } catch (error) {
     console.error("Error loading map:", error);
@@ -252,7 +246,6 @@ const loadMapFromUrl = async (url, isDropdownCheck = false) => {
   }
 };
 
-// Populate the secondary city dropdown from the province GeoJSON features
 const populateCityDropdown = (geoJson) => {
   citySelect.innerHTML = '<option value="all">-- 全省 --</option>';
 
@@ -287,8 +280,6 @@ const populateCityDropdown = (geoJson) => {
   updateBreadcrumbs();
 };
 
-// --- Breadcrumb Navigation Logic ---
-// --- Breadcrumb Navigation Logic ---
 const updateBreadcrumbs = () => {
   const breadcrumbNav = document.getElementById("mapBreadcrumb");
   if (!breadcrumbNav) return;
@@ -312,7 +303,6 @@ const updateBreadcrumbs = () => {
 
   breadcrumbNav.innerHTML = html;
 
-  // Bind clicks
   breadcrumbNav
     .querySelectorAll(".breadcrumb-item:not(.active)")
     .forEach((item) => {
@@ -320,22 +310,21 @@ const updateBreadcrumbs = () => {
         const adcode = e.currentTarget.getAttribute("data-adcode");
         if (adcode === "100000") {
           provinceSelect.value = "100000";
-          citySelect.value = "all"; // 【新增】返回全国时重置市级状态
+          citySelect.value = "all";
           cityGroup.style.display = "none";
-          loadMapFromUrl(getAliyunGeoJsonUrl("100000"), true);
+          loadMapFile("100000", true);
         } else {
           provinceSelect.value = adcode;
           citySelect.value = "all";
-          loadMapFromUrl(getAliyunGeoJsonUrl(adcode), true);
+          loadMapFile(adcode, true);
         }
       };
     });
 };
 
-// Direct JSON loading
 const loadMapFromJsonString = (jsonString) => {
   if (!jsonString.trim()) {
-    alert("请粘贴 GeoJSON 文本！");
+    alert("请粘贴或上传 GeoJSON 数据！");
     return;
   }
   setLoading(true, "解析地图数据...");
@@ -355,11 +344,11 @@ const initializeChart = (mapName) => {
 
   myChart = echarts.init(chartDom, null, { renderer: "canvas" });
 
-  // Map Drill-down click handler
   myChart.on("click", (params) => {
     if (!params.name) return;
 
-    // 1. Check if clicked region is a Province (drilling down from National)
+    if (mapName.includes("custom_json")) return;
+
     const clickedProvince = PROVINCES.find(
       (p) => p.name.includes(params.name) || params.name.includes(p.name),
     );
@@ -369,7 +358,6 @@ const initializeChart = (mapName) => {
       return;
     }
 
-    // 2. Check if clicked region is a City (drilling down from Province)
     if (cityGroup.style.display !== "none") {
       let matchedCityAdcode = null;
       for (const opt of citySelect.options) {
@@ -383,7 +371,7 @@ const initializeChart = (mapName) => {
       }
       if (matchedCityAdcode && citySelect.value !== matchedCityAdcode) {
         citySelect.value = matchedCityAdcode;
-        loadBuiltinBtn.click(); // Trigger the map load for the city
+        loadBuiltinBtn.click();
       }
     }
   });
@@ -391,7 +379,6 @@ const initializeChart = (mapName) => {
   const initialBackgroundColor = transparentBackgroundInput.checked
     ? "transparent"
     : backgroundColorInput.value;
-
   const currentAreaColor = areaColorInput.value;
   const highlightColor = darkenColor(currentAreaColor, 0.1);
 
@@ -455,14 +442,11 @@ const updateChart = () => {
   updateDisplays();
 
   const currentOption = myChart.getOption();
-
-  // Background
   const newBackgroundColor = transparentBackgroundInput.checked
     ? "transparent"
     : backgroundColorInput.value;
   currentOption.backgroundColor = newBackgroundColor;
 
-  // Styles
   const newBorderWidth = parseFloat(borderWidthInput.value);
   const newFontSize = parseFloat(labelFontSizeInput.value);
 
@@ -518,10 +502,10 @@ const bindGlobalEventListeners = () => {
       e.target.classList.add("active");
       document.getElementById(targetId).classList.add("active");
 
-      if (breadcrumbNav) {
+      if (breadcrumbNav && mapHint) {
         if (targetId === "tab-builtin") {
           breadcrumbNav.style.display = "";
-          mapHint.style.display = "block";
+          mapHint.style.display = "flex";
         } else {
           breadcrumbNav.style.display = "none";
           mapHint.style.display = "none";
@@ -530,40 +514,37 @@ const bindGlobalEventListeners = () => {
     });
   });
 
-  // Province change - automatically load province map to get cities
   provinceSelect.addEventListener("change", () => {
     const adcode = provinceSelect.value;
-    cityGroup.style.display = "none"; // Hide city until loaded
-    loadMapFromUrl(getAliyunGeoJsonUrl(adcode), true);
+    cityGroup.style.display = "none";
+    loadMapFile(adcode, true);
   });
 
-  // Load Built-in Button
   loadBuiltinBtn.addEventListener("click", () => {
     const pCode = provinceSelect.value;
     const cCode = citySelect.value;
-
     if (cCode === "all" || cityGroup.style.display === "none") {
-      // Load Province
-      loadMapFromUrl(getAliyunGeoJsonUrl(pCode), true);
+      loadMapFile(pCode, true);
     } else {
-      // Load Specific City
-      loadMapFromUrl(getAliyunGeoJsonUrl(cCode), false);
+      loadMapFile(cCode, false);
     }
   });
 
-  // Load Custom URL Button
-  if (loadMapUrlBtn) {
-    loadMapUrlBtn.addEventListener("click", () => {
-      const url = geoJsonUrlInput.value.trim();
-      if (url) {
-        loadMapFromUrl(url, false);
-      } else {
-        alert("请输入有效的 GeoJSON URL");
-      }
+  if (jsonFileInput) {
+    jsonFileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const jsonString = event.target.result;
+        geoJsonText.value = jsonString;
+        loadMapFromJsonString(jsonString);
+      };
+      reader.readAsText(file);
     });
   }
 
-  // Load JSON String Button
   if (loadMapJsonBtn) {
     loadMapJsonBtn.addEventListener("click", () => {
       loadMapFromJsonString(geoJsonText.value);
@@ -584,7 +565,6 @@ const bindGlobalEventListeners = () => {
       let filename = `${currentMapName}_export`;
 
       if (format === "png") {
-        // 【优化】使用 excludeComponents 排除工具栏，修复之前 toolbox 导致的报错
         const downloadUrl = myChart.getDataURL({
           type: "png",
           pixelRatio: ratio,
@@ -622,19 +602,16 @@ const bindGlobalEventListeners = () => {
     });
   }
 
-  // Color Swatch - Open Coloris on click + update preview on change
   colorSwatches.forEach(({ inputId, swatchId, previewId }) => {
     const input = document.getElementById(inputId);
     const swatch = document.getElementById(swatchId);
     const preview = document.getElementById(previewId);
     if (!input || !swatch || !preview) return;
 
-    // Clicking swatch opens color picker
     swatch.addEventListener("click", () => {
       input.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
 
-    // When Coloris updates the value, update the preview and chart
     input.addEventListener("change", () => {
       preview.style.background = input.value;
       updateChart();
@@ -644,7 +621,6 @@ const bindGlobalEventListeners = () => {
     });
   });
 
-  // Style Toggles & Inputs
   transparentBackgroundInput.addEventListener("change", () => {
     updateBackgroundColorControlsState();
     updateChart();
@@ -659,7 +635,6 @@ const bindGlobalEventListeners = () => {
     }
   });
 
-  // Handle Resize
   window.addEventListener("resize", () => {
     myChart?.resize();
   });
@@ -669,8 +644,7 @@ const bindGlobalEventListeners = () => {
 initProvinceDropdown();
 updateDisplays();
 
-// Initial Load (China)
-loadMapFromUrl(getAliyunGeoJsonUrl("100000"), true);
+loadMapFile("100000", true);
 
 Coloris.init();
 Coloris({
