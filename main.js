@@ -581,13 +581,10 @@ const bindGlobalEventListeners = () => {
         : backgroundColorInput.value;
 
       const currentOption = myChart.getOption();
-      const exportOption = JSON.parse(JSON.stringify(currentOption));
-
       let filename = `${currentMapName}_export`;
 
       if (format === "png") {
-        // Temporarily hide toolbox from export image
-        myChart.setOption({ toolbox: { show: false } });
+        // 【优化】使用 excludeComponents 排除工具栏，修复之前 toolbox 导致的报错
         const downloadUrl = myChart.getDataURL({
           type: "png",
           pixelRatio: ratio,
@@ -600,11 +597,12 @@ const bindGlobalEventListeners = () => {
         link.download = filename + ".png";
         link.click();
       } else if (format === "svg") {
-        // Create an offline SVG chart instance
         const tempDiv = document.createElement("div");
         tempDiv.style.width = chartDom.clientWidth + "px";
         tempDiv.style.height = chartDom.clientHeight + "px";
         const svgChart = echarts.init(tempDiv, null, { renderer: "svg" });
+
+        const exportOption = JSON.parse(JSON.stringify(currentOption));
         exportOption.backgroundColor = bg;
         svgChart.setOption(exportOption);
 
@@ -653,10 +651,10 @@ const bindGlobalEventListeners = () => {
   });
 
   const inputs = [borderWidthInput, showLabelInput, labelFontSizeInput];
-
+  const debouncedUpdate = debounce(updateChart, 50);
   inputs.forEach((input) => {
     if (input) {
-      input.addEventListener("input", updateChart);
+      input.addEventListener("input", debouncedUpdate);
       input.addEventListener("change", updateChart);
     }
   });
