@@ -619,3 +619,68 @@ input:checked + .slider:before {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.file-upload-wrapper {
+  margin-bottom: 8px;
+}
+
+.file-upload-wrapper input[type="file"] {
+  display: none;
+}
+
+.file-upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #f9fafb;
+  border: 1px dashed #9ca3af;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #4b5563;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.file-upload-btn:hover {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+  color: #2563eb;
+}
+
+.file-name {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #9ca3af;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chart-main {
+  position: relative;
+}
+
+.chart-main.drag-over::after {
+  content: '释放鼠标，立即渲染地图';
+  position: absolute;
+  inset: 16px;
+  background-color: rgba(239, 246, 255, 0.9);
+  border: 3px dashed #3b82f6;
+  border-radius: 12px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #2563eb;
+  pointer-events: none;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+}

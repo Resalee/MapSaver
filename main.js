@@ -59,12 +59,15 @@ const PROVINCES = [
 // DOM Elements
 // -----------------------------------------------------------------------------
 const chartDom = document.getElementById("mapChart");
+const chartMainContainer = document.querySelector(".chart-main");
 const loadingDom = document.getElementById("loading");
 let myChart = null;
 
 // Tab controls
 const tabBtns = document.querySelectorAll(".tab-btn");
 const tabContents = document.querySelectorAll(".tab-content");
+const breadcrumbNav = document.getElementById("mapBreadcrumb");
+const mapHint = document.querySelector(".map-hint");
 
 // Built-in map controls
 const provinceSelect = document.getElementById("provinceSelect");
@@ -72,8 +75,9 @@ const cityGroup = document.getElementById("cityGroup");
 const citySelect = document.getElementById("citySelect");
 const loadBuiltinBtn = document.getElementById("loadBuiltinBtn");
 
-// JSON Text controls
+// JSON File/Text controls
 const jsonFileInput = document.getElementById("jsonFileInput");
+const fileNameDisplay = document.getElementById("fileNameDisplay");
 const geoJsonText = document.getElementById("geoJsonText");
 const loadMapJsonBtn = document.getElementById("loadMapJsonBtn");
 
@@ -100,7 +104,6 @@ const exportRatioSelect = document.getElementById("exportRatio");
 const exportFormatSelect = document.getElementById("exportFormat");
 const exportMapBtn = document.getElementById("exportMapBtn");
 
-// Color Swatch definitions
 const colorSwatches = [
   {
     inputId: "backgroundColor",
@@ -221,7 +224,7 @@ const renderGeoJson = (geoJson, mapName) => {
   initializeChart(mapName);
 };
 
-const loadMapFile = async (adcode, isDropdownCheck = false) => {
+const loadLocalMap = async (adcode, isDropdownCheck = false) => {
   if (!adcode) return;
   setLoading(true);
 
@@ -230,25 +233,22 @@ const loadMapFile = async (adcode, isDropdownCheck = false) => {
 
   try {
     const response = await fetch(url);
-    if (!response.ok)
-      throw new Error("未找到本地地图文件，请确保 public/maps 目录下有该文件");
+    if (!response.ok) throw new Error("地图文件不存在");
     const geoJson = await response.json();
 
     if (isDropdownCheck) {
       populateCityDropdown(geoJson);
     }
-
     renderGeoJson(geoJson, currentMapName);
     updateBreadcrumbs();
   } catch (error) {
     console.error("Error loading map:", error);
-    handleLoadError(error.message);
+    handleLoadError("本地地图文件缺失，请检查 public/maps 目录");
   }
 };
 
 const populateCityDropdown = (geoJson) => {
   citySelect.innerHTML = '<option value="all">-- 全省 --</option>';
-
   const MUNICIPALITIES = ["100000", "110000", "120000", "310000", "500000"];
   if (MUNICIPALITIES.includes(provinceSelect.value)) {
     cityGroup.style.display = "none";
@@ -281,9 +281,7 @@ const populateCityDropdown = (geoJson) => {
 };
 
 const updateBreadcrumbs = () => {
-  const breadcrumbNav = document.getElementById("mapBreadcrumb");
   if (!breadcrumbNav) return;
-
   const pCode = provinceSelect.value;
   const pName = PROVINCES.find((p) => p.adcode === pCode)?.name || "省份";
   const cCode = citySelect.value;
@@ -292,17 +290,14 @@ const updateBreadcrumbs = () => {
       ?.textContent || "";
 
   let html = `<span class="breadcrumb-item ${pCode === "100000" ? "active" : ""}" data-adcode="100000">全国</span>`;
-
   if (pCode !== "100000") {
     html += `<span class="breadcrumb-item ${cCode === "all" ? "active" : ""}" data-adcode="${pCode}">${pName}</span>`;
   }
-
   if (cCode !== "all" && cityGroup.style.display !== "none") {
     html += `<span class="breadcrumb-item active" data-adcode="${cCode}">${cName}</span>`;
   }
 
   breadcrumbNav.innerHTML = html;
-
   breadcrumbNav
     .querySelectorAll(".breadcrumb-item:not(.active)")
     .forEach((item) => {
@@ -312,14 +307,37 @@ const updateBreadcrumbs = () => {
           provinceSelect.value = "100000";
           citySelect.value = "all";
           cityGroup.style.display = "none";
-          loadMapFile("100000", true);
+          loadLocalMap("100000", true);
         } else {
           provinceSelect.value = adcode;
           citySelect.value = "all";
-          loadMapFile(adcode, true);
+          loadLocalMap(adcode, true);
         }
       };
     });
+};
+
+const handleFileUpload = (file) => {
+  if (!file) return;
+
+  if (fileNameDisplay) {
+    fileNameDisplay.textContent = file.name;
+    fileNameDisplay.title = file.name;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const jsonString = event.target.result;
+    geoJsonText.value = jsonString;
+
+    const jsonTabBtn = document.querySelector('[data-target="tab-json"]');
+    if (jsonTabBtn && !jsonTabBtn.classList.contains("active")) {
+      jsonTabBtn.click();
+    }
+
+    loadMapFromJsonString(jsonString);
+  };
+  reader.readAsText(file);
 };
 
 const loadMapFromJsonString = (jsonString) => {
@@ -328,7 +346,6 @@ const loadMapFromJsonString = (jsonString) => {
     return;
   }
   setLoading(true, "解析地图数据...");
-
   try {
     const geoJson = JSON.parse(jsonString);
     currentMapName = `custom_json_${Date.now()}`;
@@ -489,10 +506,6 @@ const updateChart = () => {
 // -----------------------------------------------------------------------------
 
 const bindGlobalEventListeners = () => {
-  // Tab Switching
-  const breadcrumbNav = document.getElementById("mapBreadcrumb");
-  const mapHint = document.querySelector(".map-hint");
-
   tabBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       tabBtns.forEach((b) => b.classList.remove("active"));
@@ -517,31 +530,22 @@ const bindGlobalEventListeners = () => {
   provinceSelect.addEventListener("change", () => {
     const adcode = provinceSelect.value;
     cityGroup.style.display = "none";
-    loadMapFile(adcode, true);
+    loadLocalMap(adcode, true);
   });
 
   loadBuiltinBtn.addEventListener("click", () => {
     const pCode = provinceSelect.value;
     const cCode = citySelect.value;
     if (cCode === "all" || cityGroup.style.display === "none") {
-      loadMapFile(pCode, true);
+      loadLocalMap(pCode, true);
     } else {
-      loadMapFile(cCode, false);
+      loadLocalMap(cCode, false);
     }
   });
 
   if (jsonFileInput) {
     jsonFileInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const jsonString = event.target.result;
-        geoJsonText.value = jsonString;
-        loadMapFromJsonString(jsonString);
-      };
-      reader.readAsText(file);
+      handleFileUpload(e.target.files[0]);
     });
   }
 
@@ -551,7 +555,37 @@ const bindGlobalEventListeners = () => {
     });
   }
 
-  // Advanced Export
+  if (chartMainContainer) {
+    chartMainContainer.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      chartMainContainer.classList.add("drag-over");
+    });
+
+    chartMainContainer.addEventListener("dragleave", (e) => {
+      e.preventDefault();
+      chartMainContainer.classList.remove("drag-over");
+    });
+
+    chartMainContainer.addEventListener("drop", (e) => {
+      e.preventDefault();
+      chartMainContainer.classList.remove("drag-over");
+
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const droppedFile = e.dataTransfer.files[0];
+
+        if (
+          droppedFile.name.endsWith(".json") ||
+          droppedFile.name.endsWith(".geojson") ||
+          droppedFile.type === "application/json"
+        ) {
+          handleFileUpload(droppedFile);
+        } else {
+          alert("请拖入有效的 GeoJSON 或 JSON 文件");
+        }
+      }
+    });
+  }
+
   if (exportMapBtn) {
     exportMapBtn.addEventListener("click", () => {
       if (!myChart) return;
@@ -644,7 +678,7 @@ const bindGlobalEventListeners = () => {
 initProvinceDropdown();
 updateDisplays();
 
-loadMapFile("100000", true);
+loadLocalMap("100000", true);
 
 Coloris.init();
 Coloris({

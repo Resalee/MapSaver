@@ -79,11 +79,22 @@
           <!-- 本地/粘贴 JSON Tab -->
           <div id="tab-json" class="tab-content">
             <div class="control-group">
-              <label for="jsonFileInput">从本地上传 GeoJSON 文件</label>
-              <input type="file" id="jsonFileInput" accept=".json,.geojson" class="file-input"
-                style="width: 100%; margin-bottom: 12px; font-size: 13px; cursor: pointer;" />
+              <label>1. 上传本地 GeoJSON 文件</label>
+              <div class="file-upload-wrapper">
+                <input type="file" id="jsonFileInput" accept=".json,.geojson" />
+                <label for="jsonFileInput" class="file-upload-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  选择地图文件
+                </label>
+                <span id="fileNameDisplay" class="file-name">未选择任何文件</span>
+              </div>
 
-              <label for="geoJsonText">或粘贴 GeoJSON 文本</label>
+              <label for="geoJsonText" style="margin-top: 15px; display: block;">2. 或粘贴 GeoJSON 文本</label>
               <textarea id="geoJsonText" rows="5" class="textarea-input"
                 placeholder='{"type":"FeatureCollection","features":[]}'></textarea>
               <button id="loadMapJsonBtn" class="btn btn-primary w-full mt-2">渲染自定义地图</button>
