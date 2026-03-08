@@ -2,7 +2,7 @@
 
 **English** | [简体中文](./README_zh.md)
 
-A simple, fast, and modern web application to generate and download customized Echarts maps from GeoJSON data.
+MapSaver is a lightweight, backend-free tool for interactive map visualization and high-resolution exporting. It supports interactive drill-down for Chinese administrative regions, custom GeoJSON rendering, real-time styling, and one-click export to high-quality PNG or SVG files.
 
 ## Features ✨
 
