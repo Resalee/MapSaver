@@ -595,6 +595,7 @@ const bindGlobalEventListeners = () => {
         if (
           droppedFile.name.endsWith(".json") ||
           droppedFile.name.endsWith(".geojson") ||
+          droppedFile.name.endsWith(".geoJson") ||
           droppedFile.type === "application/json"
         ) {
           handleFileUpload(droppedFile);
@@ -678,6 +679,46 @@ const bindGlobalEventListeners = () => {
     updateBackgroundColorControlsState();
     updateChart();
   });
+
+  const zoomInBtn = document.getElementById("zoomInBtn");
+  const zoomOutBtn = document.getElementById("zoomOutBtn");
+  const zoomResetBtn = document.getElementById("zoomResetBtn");
+
+  if (zoomInBtn) {
+    zoomInBtn.addEventListener("click", () => {
+      if (!myChart) return;
+      const currentZoom = myChart.getOption().geo[0].zoom || 1;
+      myChart.setOption({
+        geo: {
+          zoom: currentZoom * 1.2,
+        },
+      });
+    });
+  }
+
+  if (zoomOutBtn) {
+    zoomOutBtn.addEventListener("click", () => {
+      if (!myChart) return;
+      const currentZoom = myChart.getOption().geo[0].zoom || 1;
+      myChart.setOption({
+        geo: {
+          zoom: currentZoom * 0.8,
+        },
+      });
+    });
+  }
+
+  if (zoomResetBtn) {
+    zoomResetBtn.addEventListener("click", () => {
+      if (!myChart) return;
+      myChart.setOption({
+        geo: {
+          zoom: 1,
+          center: null,
+        },
+      });
+    });
+  }
 
   const inputs = [borderWidthInput, showLabelInput, labelFontSizeInput];
   const debouncedUpdate = debounce(updateChart, 50);
