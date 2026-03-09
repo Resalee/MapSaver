@@ -2,17 +2,15 @@
 
 **English** | [简体中文](./README_zh.md)
 
-MapSaver is a lightweight, backend-free tool for interactive map visualization and high-resolution exporting. It supports interactive drill-down for Chinese administrative regions, custom GeoJSON rendering, real-time styling, and one-click export to high-quality PNG or SVG files.
+MapSaver is a lightweight, backend-free tool for interactive map visualization and high-resolution exporting. It features built-in Chinese administrative region data with interactive drill-down capabilities from the national level down to cities. Beyond the presets, it allows you to render custom maps via GeoJSON file uploads or raw text, enabling real-time adjustments to colors, labels, and borders for high-resolution (PNG/SVG) exports with a single click.
 
 ## Features ✨
 
-- **Preset Maps** - Built-in quick access to common maps (China, Hunan, Zhejiang, Guangdong).
-- **Custom GeoJSON** - Load any valid GeoJSON map data via URL (e.g., from DataV) or raw data.
-- **Style Customization** - Fully customize area colors, border colors, and border widths.
-- **Label Controls** - Toggle map text labels, adjust font sizes, and label colors.
-- **Background Options** - Choose between a transparent background or any custom color.
-- **Advanced Export** - High-res PNG (up to 4x) and scalable, lossless SVG vector support.
-- **PWA Ready** - Fully functional offline and installable as a standalone app.
+- **Built-in Quick Maps**: Includes comprehensive national and provincial map data with support for interactive drill-downs and smooth breadcrumb navigation, simply click on blank areas to quickly navigate back to the previous administrative level.
+- **Custom GeoJSON Support**: Effortlessly render maps by uploading local GeoJSON files or pasting raw data code, breaking free from external source limitations.
+- **Advanced Customization**: Fully personalize your maps by configuring backgrounds, area colors, border styles, and text labels (including visibility, color, and font size).
+- **High-Fidelity Export**: Generate ultra-clear PNG images (up to 4x resolution) or crisp, resolution-independent SVG vector files.
+- **Offline Capability**: PWA-ready, allowing the app to run offline and be installed as a standalone application on your device.
 
 ## Tech Stack 🛠️
 
@@ -64,7 +62,7 @@ The output will be generated in the `dist` directory.
 
 ## Usage 💡
 
-1. **Select Map Source**: Use the "Data Source" panel on the left to select a built-in province/city, or import your custom data via a URL or raw GeoJSON.
+1. **Select Map Source**: Use the "Data Source" panel on the left to select a built-in province/city, or switch to the "Upload/Paste JSON" tab to import your local map files.
 2. **Interactive Drill-down**: Click on any region within the map to drill down into sub-districts. Use the breadcrumb navigation at the top to easily jump back to higher administrative levels.
 3. **Custom Styling**: Utilize the "Style Settings" panel to customize map backgrounds, area colors, border thickness, and label typography in real-time.
 4. **Export Your Map**: Choose your preferred quality (up to 4x) and format (PNG or SVG) in the "Export Settings" panel, then click the "Export Map" button to save your map.

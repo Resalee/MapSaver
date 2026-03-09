@@ -393,6 +393,25 @@ const initializeChart = (mapName) => {
     }
   });
 
+  myChart.getZr().on("click", (event) => {
+    if (!event.target) {
+      if (mapName.includes("custom_json")) return;
+
+      const pCode = provinceSelect.value;
+      const cCode = citySelect.value;
+
+      if (cCode !== "all" && cityGroup.style.display !== "none") {
+        citySelect.value = "all";
+        loadLocalMap(pCode, false);
+      } else if (pCode !== "100000") {
+        provinceSelect.value = "100000";
+        citySelect.value = "all";
+        cityGroup.style.display = "none";
+        loadLocalMap("100000", true);
+      }
+    }
+  });
+
   const initialBackgroundColor = transparentBackgroundInput.checked
     ? "transparent"
     : backgroundColorInput.value;
