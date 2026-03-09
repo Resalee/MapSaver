@@ -6,7 +6,7 @@ MapSaver is a lightweight, backend-free tool for interactive map visualization a
 
 ## Features ✨
 
-- **Built-in Quick Maps**: Includes comprehensive national and provincial map data with support for interactive drill-downs and smooth breadcrumb navigation, simply click on blank areas to quickly navigate back to the previous administrative level.
+- **Built-in Quick Maps**: Includes comprehensive national and provincial map data with support for interactive drill-downs and smooth breadcrumb navigation, simply click on blank areas to quickly navigate back to the previous administrative level. You can also zoom in/out/reset the map.
 - **Custom GeoJSON Support**: Effortlessly render maps by uploading local GeoJSON files or pasting raw data code, breaking free from external source limitations.
 - **Advanced Customization**: Fully personalize your maps by configuring backgrounds, area colors, border styles, and text labels (including visibility, color, and font size).
 - **High-Fidelity Export**: Generate ultra-clear PNG images (up to 4x resolution) or crisp, resolution-independent SVG vector files.
